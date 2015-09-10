@@ -47,10 +47,17 @@ export default Ember.Mixin.create({
       .then(
         function() {
           this._processChildren(function(child) {
-            child.rollback();
+            child.rollbackAttributes();
           });
         }.bind(this)
     );
+  },
+
+  rollbackAttributes: function() {
+    this._processChildren(function(child) {
+      child.rollbackAttributes();
+    });
+    return this._super();
   },
 
   rollback: function() {
@@ -59,7 +66,6 @@ export default Ember.Mixin.create({
     });
     return this._super();
   },
-
 
   _processChildren: function(callback) {
     this._processRelationshipsOneOrMany(function(child) {
