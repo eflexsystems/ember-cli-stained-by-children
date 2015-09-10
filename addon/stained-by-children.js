@@ -2,10 +2,17 @@ import Ember from 'ember';
 
 export default Ember.Mixin.create({
 
-  isDirty: Ember.computed('areChildrenDirty', 'currentState.isDirty', function() {
+  hasDirtyAttributes: Ember.computed('areChildrenDirty', 'currentState.isDirty', function() {
     return this.get('currentState.isDirty') || this.get('areChildrenDirty');
   }),
 
+  isDirty: Ember.computed('areChildrenDirty', 'currentState.isDirty', function() {
+    Ember.deprecate('DS.Model#isDirty has been deprecated please use hasDirtyAttributes instead', false, {
+      id: 'ds.model.is-dirty-deprecated',
+      until: '2.0.0'
+    });
+    return this.get('currentState.isDirty') || this.get('areChildrenDirty');
+  }),
 
   // This gets overridden from `this._defineAreChildrenDirty()`
   areChildrenDirty: null,
@@ -60,25 +67,14 @@ export default Ember.Mixin.create({
   _propertyNameForRelationship: function(relationshipName, relationship) {
     var propertyName = relationshipName;
     if (relationship.kind === 'hasMany') {
-      propertyName += ".@each.isDirty";
+      propertyName += ".@each.hasDirtyAttributes";
     } else {
-      propertyName += ".isDirty";
+      propertyName += ".hasDirtyAttributes";
     }
     return propertyName;
   },
 
 
-  //_relationshipNames: function() {
-  //  var relationshipNames = [];
-  //  this.eachRelationship(function(relationshipName, relationship) {
-  //    if (relationship.options.stains) {
-  //      relationshipNames.push(relationshipName);
-  //    }
-  //  });
-  //  return relationshipNames;
-  //},
-  //
-  //
   _dirtyChildrenPropertyNames: function(relationships) {
     if (!relationships) {
       relationships = this._stainingRelationships();
@@ -108,11 +104,11 @@ export default Ember.Mixin.create({
 
     if (relationship.kind === 'hasMany') {
       return child.any(function (item) {
-        return item.get('isDirty');
+        return item.get('hasDirtyAttributes');
       });
 
     } else {
-      return child.get('isDirty');
+      return child.get('hasDirtyAttributes');
     }
   }
 });
