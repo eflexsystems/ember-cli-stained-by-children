@@ -35,15 +35,6 @@ export default Ember.Mixin.create({
       .then(
         function() {
           this._processChildren(function(child) {
-            var fragment;
-
-            // Notify fragments that the record was committed
-            for (var key in this._fragments) {
-              if (fragment = this._fragments[key]) {
-                fragment._adapterDidCommit(fragment);
-              }
-            }
-
             child.set('_internalModel._attributes', {});
           });
         }.bind(this)
