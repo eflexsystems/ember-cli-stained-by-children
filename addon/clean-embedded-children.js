@@ -35,6 +35,16 @@ export default Ember.Mixin.create({
       .then(
         function() {
           this._processChildren(function(child) {
+            var fragments = child._internalModel._fragments;
+            var fragment;
+            if (fragments) {
+              for (var key in fragments) {
+                if (fragment = fragments[key]) {
+                  fragment._adapterDidCommit();
+                }
+              }
+            }
+
             child.set('_internalModel._attributes', {});
           });
         }.bind(this)
@@ -77,17 +87,12 @@ export default Ember.Mixin.create({
       callback(child);
       child.send('didCommit');
 
-      if (typeof child._cleanChildren === "function") {
-        child._cleanChildren();
+      if (typeof child._processChildren === "function") {
+        child._processChildren(function(child) {
+          callback(child);
+        });
       }
     });
-  },
-
-
-  _cleanChildren: function() {
-    this._processChildren(function(child) {
-      child.set('_internalModel._attributes', {});
-    });
   }
-
 });
+
