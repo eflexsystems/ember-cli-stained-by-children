@@ -19,11 +19,10 @@ export default Ember.Mixin.create({
 
 
   init: function() {
-    this._super();
-
     // Setting the `areChildrenDirty` property dynamically.
     // This is required in order to bind it to all relationships.
     this._defineAreChildrenDirty();
+    this._super();
   },
 
 
