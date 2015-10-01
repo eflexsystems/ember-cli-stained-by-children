@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import EmptyObject from './utils/empty-object';
 
 export default Ember.Mixin.create({
 
@@ -45,7 +46,7 @@ export default Ember.Mixin.create({
               }
             }
 
-            child.set('_internalModel._attributes', {});
+            child.set('_internalModel._attributes', new EmptyObject());
           });
         }.bind(this)
     );
